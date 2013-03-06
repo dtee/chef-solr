@@ -1,0 +1,12 @@
+# /etc/init/solr.conf
+
+author "David Tee"
+description "Starts Solr server"
+
+respawn
+start on startup solr_push
+
+script
+	echo "Starting solr server..."
+	cd <%= @server_dir %> && java -jar start.jar >> <%= @log_dir %>/solr.log 2>&1
+end script
