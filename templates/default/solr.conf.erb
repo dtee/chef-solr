@@ -8,5 +8,5 @@ start on startup solr_push
 
 script
 	echo "Starting solr server..."
-	cd <%= @server_dir %> && java -jar start.jar >> <%= @log_dir %>/solr.log 2>&1
+	cd <%= @path %> && java -Djava.util.logging.config.file=<%= @config_dir %>/logging.properties -Dsolr.solr.home=<%= @config_dir %> -jar start.jar >> <%= @log_dir %>/solr-console.log 2>&1
 end script
