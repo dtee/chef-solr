@@ -8,5 +8,10 @@ start on startup solr_push
 
 script
 	echo "Starting solr server..."
-	cd <%= @path %> && java -Djava.util.logging.config.file=<%= @config_dir %>/logging.properties -Dsolr.solr.home=<%= @config_dir %> -jar start.jar >> <%= @log_dir %>/solr-console.log 2>&1
+	cd <%= @path %> && java -DSTOP.PORT=8079 -Djava.util.logging.config.file=<%= @config_dir %>/logging.properties -Dsolr.solr.home=<%= @config_dir %> -jar start.jar >> <%= @log_dir %>/solr-console.log 2>&1
 end script
+
+pre-stop
+	echo "Stopping solr server..."
+	cd <%= @path %> && java -DSTOP.PORT=8079 -DSTOP.KEY=secret -jar start.jar -–stop
+end pre-stop
