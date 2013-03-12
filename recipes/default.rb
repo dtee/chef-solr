@@ -15,7 +15,7 @@ end
 
 bash 'unpack solr' do
 	code <<-EOH
-		tar xvf tempfile -C #{node.solr.server_dir}
+		tar xvf #{tempfile} -C #{node.solr.server_dir}
 		touch #{node.solr.server_dir}/.#{node.solr.version}
 	EOH
 	not_if "test -f #{node.solr.server_dir}/.#{node.solr.version}"
