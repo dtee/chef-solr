@@ -8,10 +8,14 @@ start on startup solr_push
 
 script
 	echo "Starting solr server..."
-	cd <%= @path %> && java -DSTOP.PORT=8079 -Djava.util.logging.config.file=<%= @config_dir %>/logging.properties -Dsolr.solr.home=<%= @config_dir %> -jar start.jar >> <%= @log_dir %>/solr-console.log 2>&1
+	cd <%= @path %> && java -DSTOP.PORT=<%= @stop_port %> -DSTOP.KEY=secret -Djava.util.logging.config.file=<%= @config_dir %>/logging.properties -Dsolr.solr.home=<%= @config_dir %> -jar start.jar >> <%= @log_dir %>/solr-console.log 2>&1
 end script
 
-pre-stop
-	echo "Stopping solr server..."
-	cd <%= @path %> && java -DSTOP.PORT=8079 -DSTOP.KEY=secret -jar start.jar -–stop
-end pre-stop
+# http://docs.codehaus.org/display/JETTY/Securing+Jetty
+# Stopping via control-c or kill process is okay
+#
+#pre-stop
+#	echo "Stopping solr server..."
+#	cd <%= @path %> && java -DSTOP.PORT=<%= @stop_port %> -DSTOP.KEY=secret -jar start.jar -–stop
+#end pre-stop
+#
