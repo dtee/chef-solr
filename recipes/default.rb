@@ -3,7 +3,7 @@ include_recipe "java"
 tempfile = "/tmp/solr.tgz"
 
 remote_file tempfile do
-	source node['solr']['tar_url']
+	source "#{node['solr']['base_url']}#{node['solr']['version']}/solr-#{node['solr']['version']}.tgz"
 	mode 00644
 	action :create_if_missing
 end
