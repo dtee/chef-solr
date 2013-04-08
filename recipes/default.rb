@@ -80,24 +80,51 @@ if not node['solr']['cores'].empty?
 	end
 end
 
-# Create upstart service
-template "/etc/init/solr.conf" do
-	source "solr.conf.erb"
-	owner "root"
-	group "root"
-	variables(
-		:stop_port           => node['solr']['stop_port'],
-		:server_dir          => node['solr']['server_dir'],
-		:log_dir             => node['solr']['log_dir'],
-		:config_dir          => node['solr']['config_dir'],
-		:version             => node['solr']['version'],
-		:path                => "#{node['solr']['server_dir']}/solr-#{node['solr']['version']}/example",
-	)
-	mode 0644
+# is current node configured as slave or master
+if not node['solr']['property_dir'].nil?
+	masterNodes = search(:node, "solr_is_master:true")
+
+	if not masterNodes.empty?
+		master = masterNodes[0]
+		port = "#{master['solr']['port']}"
+
+		template "#{node['solr']['property_dir']}/solrcore.properties" do
+			source "solrcore.properties.erb"
+			owner node['solr']['user']
+			group node['solr']['group']
+
+			variables(
+				:is_master        => node['solr']['is_master'],
+				:master_url       => "#{master['fqdn']}:#{port}"
+			)
+
+			mode 0644
+		end
+	end
 end
 
-service "solr" do
-	provider Chef::Provider::Service::Upstart
-	supports :status => true, :restart => true, :reload => true
-	action [ :enable, :start ]
+# install solr as upstart service
+if node['solr']['install_service']
+	# Create upstart service
+	template "/etc/init/solr.conf" do
+		source "solr.conf.erb"
+		owner "root"
+		group "root"
+		variables(
+			:stop_port           => node['solr']['stop_port'],
+			:server_dir          => node['solr']['server_dir'],
+			:log_dir             => node['solr']['log_dir'],
+			:config_dir          => node['solr']['config_dir'],
+			:version             => node['solr']['version'],
+			:path                => "#{node['solr']['server_dir']}/solr-#{node['solr']['version']}/example",
+		)
+		mode 0644
+	end
+
+	service "solr" do
+		provider Chef::Provider::Service::Upstart
+		supports :status => true, :restart => true, :reload => true
+		action [ :enable, :start ]
+	end
 end
+

@@ -1,0 +1,6 @@
+# solrcore.properties
+# replication configuration
+enable.master= <%= @is_master %>
+enable.slave= <%= not @is_master %>
+
+masterUrl=http://<%= @master_url %>/solr/replication
