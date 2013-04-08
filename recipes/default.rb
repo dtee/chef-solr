@@ -1,6 +1,6 @@
 include_recipe "java"
 
-tempfile = "/tmp/solr.tgz"
+tempfile = "/tmp/solr-#{node['solr']['version']}.tgz"
 
 remote_file tempfile do
 	source "#{node['solr']['base_url']}#{node['solr']['version']}/solr-#{node['solr']['version']}.tgz"
