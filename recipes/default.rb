@@ -1,9 +1,10 @@
 include_recipe "java"
 
-tempfile = "/tmp/solr-#{node['solr']['version']}.tgz"
+tempfile = "#{Chef::Config['file_cache_path'] || '/tmp'}/solr-#{node['solr']['version']}.tgz"
 
 remote_file tempfile do
-	source "#{node['solr']['base_url']}#{node['solr']['version']}/solr-#{node['solr']['version']}.tgz"
+	source "#{node['solr']['source_url']}"
+	checksum "#{node['solr']['checksum']}"
 	mode 00644
 	action :create_if_missing
 end
