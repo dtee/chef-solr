@@ -24,6 +24,11 @@ end
 
 # Configure solr
 
+directory "#{node['solr']['log_dir']}" do
+  mode 0644
+  action :create
+end
+
 if not node['solr']['cores'].empty?
 	directory node['solr']['config_dir'] do
 		recursive true
